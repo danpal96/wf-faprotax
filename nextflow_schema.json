@@ -23,8 +23,7 @@
 				}
 			},
 			"required": [
-				"table",
-				"groups"
+				"table"
 			]
 		},
 		"output": {
