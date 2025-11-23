@@ -12,8 +12,9 @@ process joinTables {
 
     script:
     """
-    mlr --tsv unsparsify --fill-with 0 \\
-        then stats1 -a sum -g tax --fx '^tax\$' \\
+    mlr --tsv put '\$[[1]] = "taxonomy"' \\
+        then unsparsify --fill-with 0 \\
+        then stats1 -a sum -g taxonomy --fx '^taxonomy\$' \\
         then rename -r '_sum\$,' ${tables} > table.tsv
     """
 }
