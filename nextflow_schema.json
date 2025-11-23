@@ -1,6 +1,7 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"type": "object",
+	"demo_url": "https://github.com/danpal96/wf-faprotax/raw/refs/heads/main/assets/wf-faprotax-demo.tar.gz",
 	"$defs": {
 		"input": {
 			"title": "Input Options",
@@ -12,8 +13,7 @@
 					"format": "path",
 					"title": "Table",
 					"description": "Abundance tables in TSV format to use.",
-					"help_text": "This accepts one of two cases: (i) the path to a single TSV file; (ii) the path to a folder containing TSV files.",
-					"demo_data": "test_data"
+					"help_text": "This accepts one of two cases: (i) the path to a single TSV file; (ii) the path to a folder containing TSV files."
 				},
 				"groups": {
 					"type": "string",
