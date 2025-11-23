@@ -1,0 +1,59 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"$defs": {
+		"input": {
+			"title": "Input Options",
+			"type": "object",
+			"description": "Parameters for finding and handling input data for analysis.",
+			"properties": {
+				"table": {
+					"type": "string",
+					"format": "path",
+					"title": "Table",
+					"description": "Abundance tables in TSV format to use.",
+					"help_text": "This accepts one of two cases: (i) the path to a single TSV file; (ii) the path to a folder containing TSV files.",
+					"demo_data": "test_data"
+				},
+				"groups": {
+					"type": "string",
+					"format": "file-path",
+					"title": "FAPROTAX groups",
+					"description": "Path to a file defining the groups by which to collapse the table."
+				}
+			},
+			"required": [
+				"table",
+				"groups"
+			]
+		},
+		"output": {
+			"title": "Output Options",
+			"type": "object",
+			"description": "Parameters for saving and naming workflow outputs.",
+			"properties": {
+				"out_dir": {
+					"type": "string",
+					"format": "directory-path",
+					"default": "output",
+					"title": "Output directory",
+					"description": "Directory for output of all workflow results."
+				},
+				"omit_unrepresented_groups": {
+					"type": "boolean",
+					"default": true,
+					"title": "Omit unrepresented groups",
+					"description": "Omits groups with zeros in all samples"
+				}
+			}
+		}
+	},
+	"allOf": [
+		{
+			"$ref": "#/$defs/input"
+		},
+		{
+			"$ref": "#/$defs/output"
+		}
+	]
+}
