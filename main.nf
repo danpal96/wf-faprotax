@@ -42,7 +42,7 @@ process faprotax {
     path groups
 
     output:
-    path "functions.tsv", emit: funct_table
+    path "functions.tsv", emit: func_table
     path "report.txt", emit: report
 
     script:
@@ -62,15 +62,72 @@ process faprotax {
     """
 }
 
+process makeReport {
+    publishDir params.out_dir, mode: "copy"
+    label "r_env"
+
+    input:
+    path tax_table
+    path func_table
+
+    output:
+    path "wf-faprotax-report.html"
+    path "tables"
+
+    script:
+    """
+    #!/usr/bin/env Rscript
+
+    library(data.table)
+    library(htmlwidgets)
+    library(htmltools)
+    library(reactable)
+
+    get_table <- function(path) {
+        reactable(
+            fread(path, sep="\\t"),
+            filterable=TRUE, compact=TRUE, striped=TRUE, bordered=TRUE,
+            resizable=TRUE, pagination=FALSE, highlight=TRUE
+        )
+    }
+
+    dir.create("tables", showWarnings = FALSE)
+
+    tax_table <- get_table("${tax_table}")
+    saveWidget(tax_table, "tables/tax_table.html", selfcontained = FALSE, libdir = "lib")
+    func_table <- get_table("${func_table}")
+    saveWidget(func_table, "tables/func_table.html", selfcontained = FALSE, libdir = "lib")
+    page = tagList(
+        h1("Report"),
+        h2("Taxonomy"),
+        tags\$iframe(
+            src="tables/tax_table.html",
+            frameBorder = "0",
+            width="100%",
+            height="600"
+        ),
+        h2("Functions"),
+        tags\$iframe(
+            src="tables/func_table.html",
+            frameBorder = "0",
+            width="100%",
+            height="600"
+        ),
+    )
+    save_html(page, "wf-faprotax-report.html")
+    """
+}
+
 workflow {
     WorkflowMain.initialise(workflow, params, log)
 
-    table = file(params.table, checkIfExists: true)
-    if (table.isDirectory()) {
-        ch_table = files("${table}/*.tsv", checkIfExists: true)
-        table = joinTables(ch_table)
+    tax_table = file(params.table, checkIfExists: true)
+    if (tax_table.isDirectory()) {
+        ch_table = files("${tax_table}/*.tsv", checkIfExists: true)
+        tax_table = joinTables(ch_table)
     }
     groups = file(params.groups, checkIfExists: true)
-    convertToBiom(table)
+    convertToBiom(tax_table)
     faprotax(convertToBiom.out, groups)
+    makeReport(tax_table, faprotax.out.func_table)
 }
