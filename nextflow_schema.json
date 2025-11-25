@@ -1,8 +1,8 @@
 {
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$schema": "http://json-schema.org/draft-07/schema",
 	"type": "object",
-	"demo_url": "https://github.com/danpal96/wf-faprotax/raw/refs/heads/main/assets/wf-faprotax-demo.tar.gz",
-	"$defs": {
+	"demo_url": "https://github.com/danpal96/wf-faprotax/releases/download/v0.1.0/wf-faprotax-demo.tar.gz",
+	"definitions": {
 		"input": {
 			"title": "Input Options",
 			"type": "object",
@@ -45,14 +45,49 @@
 					"description": "Omits groups with zeros in all samples"
 				}
 			}
+		},
+		"misc": {
+			"title": "Miscellaneous Options",
+			"type": "object",
+			"description": "Everything else.",
+			"default": "",
+			"properties": {
+				"help": {
+					"type": "boolean",
+					"description": "Display help text.",
+					"default": false,
+					"hidden": true
+				},
+				"version": {
+					"type": "boolean",
+					"description": "Display version and exit.",
+					"default": false,
+					"hidden": true
+				}
+			}
 		}
 	},
 	"allOf": [
 		{
-			"$ref": "#/$defs/input"
+			"$ref": "#/definitions/input"
 		},
 		{
-			"$ref": "#/$defs/output"
+			"$ref": "#/definitions/output"
+		},
+		{
+			"$ref": "#/definitions/misc"
 		}
-	]
+	],
+	"properties": {
+		"monochrome_logs": {
+			"type": "boolean"
+		},
+		"validate_params": {
+			"type": "boolean",
+			"default": true
+		},
+		"show_hidden_params": {
+			"type": "boolean"
+		}
+	}
 }

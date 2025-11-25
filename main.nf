@@ -1,5 +1,3 @@
-include { validateParameters ; paramsSummaryLog } from 'plugin/nf-schema'
-
 process joinTables {
     publishDir params.out_dir, mode: "copy"
     label "miller"
@@ -65,11 +63,7 @@ process faprotax {
 }
 
 workflow {
-    // Validate input parameters
-    validateParameters()
-
-    // Print summary of supplied parameters
-    log.info(paramsSummaryLog(workflow))
+    WorkflowMain.initialise(workflow, params, log)
 
     table = file(params.table, checkIfExists: true)
     if (table.isDirectory()) {
